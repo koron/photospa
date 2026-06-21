@@ -16,11 +16,11 @@ SELECT DISTINCT UNNEST(tags) AS tag
 DROP TABLE IF EXISTS image_tags;
 CREATE TABLE image_tags (
     image_id INTEGER NOT NULL,
-    tags_id  INTEGER NOT NULL,
-    PRIMARY KEY (image_id, tags_id)
+    tag_id   INTEGER NOT NULL,
+    PRIMARY KEY (image_id, tag_id)
 );
 
-INSERT INTO image_tags(image_id, tags_id)
+INSERT INTO image_tags(image_id, tag_id)
 SELECT r.id, t.id FROM (
     SELECT DISTINCT id, UNNEST(tags) AS tag_name FROM raw_images
 ) r
