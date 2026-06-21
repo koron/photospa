@@ -22,6 +22,6 @@ CREATE TABLE image_tags (
 
 INSERT INTO image_tags(image_id, tags_id)
 SELECT r.id, t.id FROM (
-    SELECT id, UNNEST(tags) AS tag_name FROM raw_images
+    SELECT DISTINCT id, UNNEST(tags) AS tag_name FROM raw_images
 ) r
 JOIN tags AS t ON r.tag_name = t.tag;
