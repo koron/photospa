@@ -1,3 +1,6 @@
 images.tsv
 
 *.db
+
+httpserver.exe
+httpserver
