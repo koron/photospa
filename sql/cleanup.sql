@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS raw_images;
+DROP SEQUENCE IF EXISTS seq_raw_images_id;
+
+CHECKPOINT;
