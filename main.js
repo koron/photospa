@@ -52,9 +52,19 @@ async function handleImage(image) {
   console.log('handleImage', 'image:', image, 'tags:', tags);
   photospa.image = image;
   photospa.tags = tags;
-  // TODO: Prepare #photo_image page
+
+  // Set photo image.
   const el = document.querySelector('#photo_img');
   el.src = image.path.slice(1);
+  // Fill information.
+  const container = document.querySelector('#photo_image .information .container');
+  const [elName, elCategory, elTitle, elDesc, elTags ] = container.querySelectorAll('.name, .category, .title, .desc, .tags');
+  elName.innerText = image.path.replace(/^.*\//, '');
+  elCategory.innerText = image.category;
+  elTitle.innerText = image.title;
+  elDesc.innerText = image.description;
+  elTags.innerHTML = tags.map(t => `<span>${t.tag}</span>`).join('');
+
   activatePage('#photo_image');
 }
 

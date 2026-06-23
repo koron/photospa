@@ -19,4 +19,25 @@
     height: 100%;
     object-fit: contain;
   }
+
+  .information {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background-color: #00000060;
+    color: #ffffff;
+    padding: 0.7em 1em;
+    border-radius: 0.7em;
+    max-width: 30%;
+
+    .container {
+      margin: 0;
+    }
+    .tags > * {
+      margin-right: 0.2em;
+      padding: 0.05em 0.5em;
+      background-color: #ffffff33;
+      border-radius: 0.5em;
+    }
+  }
 }
