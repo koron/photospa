@@ -23,7 +23,7 @@ photospa.conn = conn;
 console.log('Ready!');
 
 async function getImage(path) {
-  const r = await conn.query(`SELECT id, directory_id, category_id, path, created_at, hash, description, (SELECT name FROM categories WHERE id = i.category_id) AS category FROM images AS i WHERE path = '${path}';`);
+  const r = await conn.query(`SELECT id, directory_id, category_id, path, created_at, hash, title, description, (SELECT name FROM categories WHERE id = i.category_id) AS category FROM images AS i WHERE path = '${path}';`);
   return r.toArray()[0]?.toJSON()
 }
 
@@ -38,7 +38,7 @@ async function getDir(path) {
 }
 
 async function getDirImages(dirID) {
-  const r = await conn.query(`SELECT i.id, i.directory_id, i.category_id, i.path, i.created_at, i.hash, i.description, c.name AS category FROM images AS i JOIN categories AS c ON c.id = i.category_id WHERE i.directory_id = ${dirID} ORDER BY i.created_at ASC`);
+  const r = await conn.query(`SELECT i.id, i.directory_id, i.category_id, i.path, i.created_at, i.hash, i.title, i.description, c.name AS category FROM images AS i JOIN categories AS c ON c.id = i.category_id WHERE i.directory_id = ${dirID} ORDER BY i.created_at ASC`);
   return r.toArray().map(row => row.toJSON());
 }
 
@@ -58,6 +58,8 @@ async function handleImage(image) {
   activatePage('#photo_image');
 }
 
+
+
 async function handleDir(dir) {
   const subdirs = await getDirSubdirs(dir.id);
   const images = await getDirImages(dir.id);
@@ -65,12 +67,39 @@ async function handleDir(dir) {
   photospa.dir = dir;
   photospa.subdirs = subdirs;
   photospa.images = images;
-  // TODO: Prepare #photo_dir page
+
+  // Fill subdirs
+  const container = document.querySelector('#photo_dir .subdir.container');
+  const tmpl = document.querySelector('#tmpl_dir_subdir').content;
+  container.replaceChildren();
+  subdirs.forEach((subdir) => {
+    const clone = tmpl.cloneNode(true);
+    const anchor = clone.querySelector('.anchor');
+    anchor.innerText = subdir.name;
+    anchor.href = '#d/' + subdir.full_path;
+    container.appendChild(clone);
+  });
+  // Fill images
+  const imageContainer = document.querySelector('#photo_dir .image.container');
+  const imageTempalte = document.querySelector('#tmpl_dir_image').content;
+  imageContainer.replaceChildren();
+  images.forEach((image) => {
+    const clone = imageTempalte.cloneNode(true);
+    const [name, category, title, desc, date] = clone.querySelectorAll('.name, .category, .title, .desc, .date');
+    name.href = "#i/" + image.path;
+    name.innerText = image.path.replace(/^.*\//, '');
+    category.innerText = image.category;
+    title.innerText = image.title;
+    desc.innerText = image.description;
+    date.innerText = new Date(image.created_at).toLocaleString();
+    imageContainer.appendChild(clone);
+  });
+
   activatePage('#photo_dir');
 }
 
 async function handleRouting() {
-  const hash = window.location.hash.replace('#', '') || 'home';
+  const hash = decodeURIComponent(window.location.hash.replace('#', '')) || 'home';
   console.log(`handleRouting: hash=${hash}`);
 
   switch (hash.slice(0, 2)) {
@@ -109,9 +138,7 @@ async function handleRouting() {
 
 async function activatePage(id) {
   id = id.startsWith('#') ? id.slice(1) : id;
-  console.log(`activatePage: id=${id}`)
   document.querySelectorAll('.page').forEach((el) => {
-    console.log(`activatePage: el.id=${el.id}`)
     if (el.id === id) {
       el.classList.add('active');
     } else {

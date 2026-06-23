@@ -8,18 +8,20 @@ CREATE TABLE raw_images (
     created_at  TIMESTAMPTZ NOT NULL,
     hash        TEXT NOT NULL,
     category    TEXT NOT NULL,
+    title       TEXT,
     tags        TEXT[],
     description TEXT,
 );
 
-INSERT INTO raw_images(path, created_at, hash, category, tags, description)
+INSERT INTO raw_images(path, created_at, hash, category, title, tags, description)
 SELECT 
     column00 AS path,
     column01::TIMESTAMPTZ AS created_at,
     column02 AS hash,
     column03 AS category,
-    string_split(column04, ',') AS tags, -- ここでカンマ分割
-    column05 AS description,
+    column04 AS title,
+    string_split(column05, ',') AS tags, -- ここでカンマ分割
+    column06 AS description,
 FROM read_csv(
     'images.tsv', 
     delim='\t', 
@@ -31,7 +33,8 @@ FROM read_csv(
         'column03': 'TEXT',
         'column04': 'TEXT', -- 一度TEXTとして読み込む
         'column05': 'TEXT',
-        'column06': 'TEXT'
+        'column06': 'TEXT',
+        'column07': 'TEXT'
     }
 );
 

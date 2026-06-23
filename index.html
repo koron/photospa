@@ -10,8 +10,48 @@
 <script type="module" src="/main.js"></script>
 
 <h1>Photospa (WIP)</h1>
-<pre id="result">データを読み込み中...</pre>
+
+<div id="progress" class="page active">
+  <pre id="result">データを読み込み中...</pre>
+</div>
 
 <div id="photo_image" class="page">
   <img id="photo_img" class="photo_content">
+</div>
+
+<div id="photo_dir" class="page">
+  <h2>Sub directories</h2>
+  <section>
+    <ul class="subdir container">
+    </ul>
+    <template id="tmpl_dir_subdir">
+      <li><a class="anchor" href=""></a></li>
+    </template>
+  </section>
+
+  <h2>Images</h2>
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody class="image container">
+      </tbody>
+      <template id="tmpl_dir_image">
+        <tr>
+          <td><a href="" class="name"></a></td>
+          <td class="category"></td>
+          <td class="title"></td>
+          <td class="desc"></td>
+          <td class="date"></td>
+        </tr>
+      </template>
+    </table>
+  </section>
 </div>
